@@ -8,14 +8,503 @@
       <meta name="msapplication-tap-highlight" content="no">
       <meta name="viewport" content="width=device-width, initial-scale=1">
 
-      <title>Project</title>
-
+      <title>Teachinder</title>
       <link rel="stylesheet" href="./css/app.css">
 
    </head>
 
    <body itemscope itemtype="http://schema.org/WebPage">
-      <script type="text/javascript" src="./js/app.js"></script>
-      
+      <header>
+         <div class="header-container">
+            <a href="/" class="logo">Teachinder</a>
+
+            <form class="search-form" action="#" method="get">
+                <input
+                    type="search"
+                    id="teacher-search"
+                    name="search"
+                    placeholder="Name, note or age to search"
+                >
+                <button type="submit">Search</button>
+            </form>
+        </div>
+
+        <nav class="main-navigation" aria-label="Main navigation">
+            <a href="#teachers">Teachers</a>
+            <a href="#statistics">Statistics</a>
+            <a href="#favorites">Favorites</a>
+            <a href="#about">About</a>
+            <a href="#modal-add-teacher" class="btn-add-teacher">Add teacher</a>
+        </nav>
+      </header>
+
+      <main>
+
+        <section id="teachers" class="top-teachers">
+            <h1>Top Teachers</h1>
+
+            <form class="teachers-filters" action="#" method="get">
+                <div class="age-filter">
+                    <label for="age-select">Age</label>
+                    <select id="age-select" name="age">
+                        <option value="18-31">18-31</option>
+                        <option value="32-45">32-41</option>
+                        <option value="43-54">42-51</option>
+                    </select>
+                </div>
+
+                <div class="region-filter">
+                    <label for="region-select">Region</label>
+                    <select id="region-select" name="region">
+                        <option value="Europe">Europe</option>
+                        <option value="Asia">Asia</option>
+                        <option value="America">America</option>
+                    </select>
+                </div>
+
+                <div class="sex-filter">
+                    <label for="sex-select">Sex</label>
+                    <select id="sex-select" name="sex">
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                </div>
+
+                <div class="photo-filter">
+                    <input type="checkbox" id="photo-checkbox" name="photo" value="yes">
+                    <label for="photo-checkbox">Only with photo</label>
+                </div>
+
+                <div class="favourites-filter">
+                    <input type="checkbox" id="favourites-checkbox" name="favourites" value="yes">
+                    <label for="favourites-checkbox">Only favorites</label>
+                </div>
+            </form>
+
+            <div class="teachers-grid">
+                <article class="teacher-card">
+                    <a href="#modal-teacher-info" class="teacher-card-link">
+                        <div class="teacher-avatar">
+                            <img src="images/teacher.jpg" alt="Ihor Tkachuk">
+                        </div>
+                        <h2 class="teacher-name">Ihor Tkachuk</h2>
+                        <p class="teacher-speciality">Chemistry</p>
+                        <p class="teacher-country">Ukraine</p>
+                    </a>
+                </article>
+
+                <article class="teacher-card">
+                    <a href="#modal-teacher-info" class="teacher-card-link">
+                        <div class="teacher-avatar">
+                            <img src="images/teacher.jpg" alt="Pragg Rameshbabu">
+                        </div>
+                        <h2 class="teacher-name">Pragg Rameshbabu</h2>
+                        <p class="teacher-speciality">Chess</p>
+                        <p class="teacher-country">India</p>
+                    </a>
+                </article>
+
+                <article class="teacher-card favorite">
+                    <a href="#modal-teacher-info" class="teacher-card-link">
+                        <div class="teacher-avatar">
+                            <img src="images/teacher.jpg" alt="Floor Jansen">
+                            <span class="favorite-star" aria-label="Favorite">★</span>
+                        </div>
+                        <h2 class="teacher-name">Floor Jansen</h2>
+                        <p class="teacher-speciality">Vocal</p>
+                        <p class="teacher-country">Denmark</p>
+                    </a>
+                </article>
+
+                <article class="teacher-card">
+                    <a href="#modal-teacher-info" class="teacher-card-link">
+                        <div class="teacher-avatar">
+                            <img src="images/teacher.jpg" alt="John Burke">
+                        </div>
+                        <h2 class="teacher-name">John Burke</h2>
+                        <p class="teacher-speciality">Computer Science</p>
+                        <p class="teacher-country">Belgium</p>
+                    </a>
+                </article>
+
+                <article class="teacher-card favorite">
+                    <a href="#modal-teacher-info" class="teacher-card-link">
+                        <div class="teacher-avatar">
+                            <img src="images/teacher.jpg" alt="Ari Tang">
+                            <span class="favorite-star" aria-label="Favorite">★</span>
+                        </div>
+                        <h2 class="teacher-name">Ari Tang</h2>
+                        <p class="teacher-speciality">Biology</p>
+                        <p class="teacher-country">China</p>
+                    </a>
+                </article>
+
+                <article class="teacher-card">
+                    <a href="#modal-teacher-info" class="teacher-card-link">
+                        <div class="teacher-avatar">
+                            <img src="images/teacher.jpg" alt="Rachel Andrew">
+                        </div>
+                        <h2 class="teacher-name">Rachel Andrew</h2>
+                        <p class="teacher-speciality">Medicine</p>
+                        <p class="teacher-country">UK</p>
+                    </a>
+                </article>
+
+                <article class="teacher-card">
+                    <a href="#modal-teacher-info" class="teacher-card-link">
+                        <div class="teacher-avatar initials-avatar">
+                            <span> A.M </span>
+                        </div>
+                        <h2 class="teacher-name">Anna Muzychuk</h2>
+                        <p class="teacher-speciality">Chess</p>
+                        <p class="teacher-country">Ukraine</p>
+                    </a>
+                </article>
+
+                <article class="teacher-card">
+                    <a href="#modal-teacher-info" class="teacher-card-link">
+                        <div class="teacher-avatar initials-avatar">
+                            <span>R.L</span>
+                        </div>
+                        <h2 class="teacher-name">Radoslaw Ljuboevic</h2>
+                        <p class="teacher-speciality">Physics</p>
+                        <p class="teacher-country">Poland</p>
+                    </a>
+                </article>
+            </div>
+        </section>
+
+        <section id="statistics" class="statistics">
+            <h2>Statistics</h2>
+
+            <table class="statistics-table">
+                <thead>
+                    <tr>
+                        <th scope="col" class="sortable">Name <span class="sort-arrow">&darr;</span></th>
+                        <th scope="col" class="sortable">Speciality <span class="sort-arrow">&darr;</span></th>
+                        <th scope="col" class="sortable">Age <span class="sort-arrow">&darr;</span></th>
+                        <th scope="col" class="sortable">Gender <span class="sort-arrow">&darr;</span></th>
+                        <th scope="col" class="sortable">Nationality <span class="sort-arrow">&darr;</span></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>Daisy Alexander</td>
+                        <td>Chemistry</td>
+                        <td>28</td>
+                        <td>Female</td>
+                        <td>Vietnam</td>
+                    </tr>
+                    <tr>
+                        <td>Julia Bradley</td>
+                        <td>Math</td>
+                        <td>26</td>
+                        <td>Female</td>
+                        <td>USA</td>
+                    </tr>
+                    <tr>
+                        <td>Rita Hart</td>
+                        <td>Art</td>
+                        <td>41</td>
+                        <td>Female</td>
+                        <td>Ireland</td>
+                    </tr>
+                    <tr>
+                        <td>Jonathan Jacobs</td>
+                        <td>Math</td>
+                        <td>32</td>
+                        <td>Male</td>
+                        <td>England</td>
+                    </tr>
+                    <tr>
+                        <td>Nathaniel White</td>
+                        <td>Computer Science</td>
+                        <td>37</td>
+                        <td>Male</td>
+                        <td>Austria</td>
+                    </tr>
+                    <tr>
+                        <td>Frank Medina</td>
+                        <td>English</td>
+                        <td>43</td>
+                        <td>Male</td>
+                        <td>Italy</td>
+                    </tr>
+                    <tr>
+                        <td>Ella Curtis</td>
+                        <td>Chess</td>
+                        <td>34</td>
+                        <td>Female</td>
+                        <td>USA</td>
+                    </tr>
+                    <tr>
+                        <td>Claire Simmons</td>
+                        <td>Art</td>
+                        <td>38</td>
+                        <td>Female</td>
+                        <td>Netherlands</td>
+                    </tr>
+                    <tr>
+                        <td>Benjamin Knight</td>
+                        <td>Biology</td>
+                        <td>44</td>
+                        <td>Male</td>
+                        <td>Scotland</td>
+                    </tr>
+                    <tr>
+                        <td>Norma Rose</td>
+                        <td>Statistics</td>
+                        <td>36</td>
+                        <td>Female</td>
+                        <td>France</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <nav class="pagination" aria-label="Statistics pages">
+                <a>1</a>
+                <a>2</a>
+                <a>3</a>
+                <span aria-hidden="true">...</span>
+                <a>Last</a>
+            </nav>
+        </section>
+        
+        <section id="favorites" class="favorites">
+            <h2>Favorites</h2>
+
+            <div class="favorites-carousel">
+                <a href="#fav-1" class="carousel-arrow prev-arrow" aria-label="Previous favorites">&lt;</a>
+
+                <div class="favorites-cards">
+                    <article id="fav-1" class="favorite-card">
+                        <a href="#modal-teacher-info" class="teacher-card-link">
+                            <div class="teacher-avatar">
+                                <img src="images/teacher.jpg" alt="Ihor Tkachuk">
+                            </div>
+                            <h3 class="teacher-name">Ihor Tkachuk</h3>
+                            <p class="teacher-country">Ukraine</p>
+                        </a>
+                    </article>
+
+                    <article id="fav-2" class="favorite-card">
+                        <a href="#modal-teacher-info" class="teacher-card-link">
+                            <div class="teacher-avatar initials-avatar">
+                                <span>A.M</span>
+                            </div>
+                            <h3 class="teacher-name">Anna Makarevich</h3>
+                            <p class="teacher-country">Ukraine</p>
+                        </a>
+                    </article>
+
+                    <article id="fav-3" class="favorite-card">
+                        <a href="#modal-teacher-info" class="teacher-card-link">
+                            <div class="teacher-avatar">
+                                <img src="images/teacher.jpg" alt="John Burke">
+                            </div>
+                            <h3 class="teacher-name">John Burke</h3>
+                            <p class="teacher-country">Belgium</p>
+                        </a>
+                    </article>
+
+                    <article id="fav-4" class="favorite-card">
+                        <a href="#modal-teacher-info" class="teacher-card-link">
+                            <div class="teacher-avatar">
+                                <img src="images/teacher.jpg" alt="Ari Tang">
+                            </div>
+                            <h3 class="teacher-name">Ari Tang</h3>
+                            <p class="teacher-country">China</p>
+                        </a>
+                    </article>
+
+                    <article id="fav-5" class="favorite-card">
+                        <a href="#modal-teacher-info" class="teacher-card-link">
+                            <div class="teacher-avatar">
+                                <img src="images/teacher.jpg" alt="Floor Jansen">
+                            </div>
+                            <h3 class="teacher-name">Floor Jansen</h3>
+                            <p class="teacher-country">Denmark</p>
+                        </a>
+                    </article>
+
+                    <article id="fav-6" class="favorite-card">
+                        <a href="#modal-teacher-info" class="teacher-card-link">
+                            <div class="teacher-avatar">
+                                <img src="images/teacher.jpg" alt="Rachel Andrew">
+                            </div>
+                            <h3 class="teacher-name">Rachel Andrew</h3>
+                            <p class="teacher-country">UK</p>
+                        </a>
+                    </article>
+
+                    <article id="fav-7" class="favorite-card">
+                        <a href="#modal-teacher-info" class="teacher-card-link">
+                            <div class="teacher-avatar">
+                                <img src="images/teacher.jpg" alt="Pragg Rameshbabu">
+                            </div>
+                            <h3 class="teacher-name">Pragg Rameshbabu</h3>
+                            <p class="teacher-country">India</p>
+                        </a>
+                    </article>
+
+                    <article id="fav-8" class="favorite-card">
+                        <a href="#modal-teacher-info" class="teacher-card-link">
+                            <div class="teacher-avatar initials-avatar">
+                                <span>R.L</span>
+                            </div>
+                            <h3 class="teacher-name">Radoslaw Ljuboevic</h3>
+                            <p class="teacher-country">Poland</p>
+                        </a>
+                    </article>
+                </div>
+
+                <a href="#fav-5" class="carousel-arrow next-arrow" aria-label="Next favorites">&gt;</a>
+            </div>
+        </section>
+
+        <section id="about" class="about">
+            <h2>About Teachinder</h2>
+
+            <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                A atque facere, hic impedit. Itaque molestiae sit tempore?
+                Ea in mollitia natus rerum voluptates. Ea ex mecepturi facere
+                tempora. Aliquid asperiores hic impedit iusto natus quaerat
+                ratione sit? Culpa iusto optio voluptas voluptate.
+                Enim eveniet fugit iure maiores molestiae, praesentium quia.
+            </p>
+
+            <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Aliquam eligendi illum in inventore ipsum odio officiis omnis
+                quisquam sed tempora?
+            </p>
+
+            <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                A atque esse expedita id iusto mollitia, odit sint ullam
+                veritatis vero?
+            </p>
+        </section>
+
+      </main>
+
+      <footer>
+         <nav class="footer-navigation" aria-label="Main navigation">
+            <a href="#teachers">Teachers</a>
+            <a href="#statistics">Statistics</a>
+            <a href="#favorites">Favorites</a>
+            <a href="#about">About</a>
+            <a href="#modal-add-teacher" class="btn-add-teacher">Add teacher</a>
+        </nav>
+      </footer>
+
+      <div id="modal-add-teacher" class="modal-overlay" role="dialog">
+         <div class="modal-content add-teacher-modal">
+            <div class="modal-header">
+               <h3>Add Teacher</h3>
+               <a href="#" class="modal-close" aria-label="Close modal">&times;</a>
+            </div>
+            <form class="modal-body add-teacher-form" action="#" method="post">
+               <div class="form-group">
+                  <label for="input-name">Name</label>
+                  <input type="text" id="input-name" placeholder="Enter name">
+               </div>
+               <div class="form-group">
+                  <label for="input-speciality">Speciality</label>
+                  <select id="input-speciality">
+                     <option value="Mathematics">Mathematics</option>
+                     <option value="Chemistry">Chemistry</option>
+                     <option value="Physics">Physics</option>
+                     <option value="Biology">Biology</option>
+                     <option value="Chess">Chess</option>
+                  </select>
+               </div>
+               <div class="form-row">
+                  <div class="form-group">
+                     <label for="input-country">Country</label>
+                     <select id="input-country">
+                        <option value="Ukraine">Ukraine</option>
+                        <option value="USA">USA</option>
+                        <option value="UK">UK</option>
+                     </select>
+                  </div>
+                  <div class="form-group">
+                     <label for="input-city">City</label>
+                     <input type="text" id="input-city">
+                  </div>
+               </div>
+               <div class="form-row">
+                  <div class="form-group">
+                     <label for="input-email">Email</label>
+                     <input type="email" id="input-email">
+                  </div>
+                  <div class="form-group">
+                     <label for="input-phone">Phone</label>
+                     <input type="tel" id="input-phone">
+                  </div>
+               </div>
+               <div class="form-group">
+                  <label for="input-dob">Date of birth</label>
+                  <input type="date" id="input-dob" placeholder="dd/mm/yyyy">
+               </div>
+               <div class="form-group sex-group">
+                  <label>Sex</label>
+                  <div class="radio-options">
+                     <label><input type="radio" name="modal-sex" value="Male" checked> Male</label>
+                     <label><input type="radio" name="modal-sex" value="Female"> Female</label>
+                  </div>
+               </div>
+               <div class="form-group color-group">
+                  <label for="input-color">Background color</label>
+                  <div class="color-picker-wrapper">
+                     <span class="color-icon">&#127912;</span>
+                     <input type="color" id="input-color" value="#ffffff">
+                  </div>
+               </div>
+               <div class="form-group">
+                  <label for="input-notes">Notes (optional)</label>
+                  <textarea id="input-notes" rows="4"></textarea>
+               </div>
+               <div class="form-actions">
+                  <button type="button" class="btn-submit-add">Add</button>
+               </div>
+            </form>
+         </div>
+      </div>
+
+      <div id="modal-teacher-info" class="modal-overlay" role="dialog">
+         <div class="modal-content teacher-info-modal">
+            <div class="modal-header">
+               <h3>Teacher Info</h3>
+               <a href="#" class="modal-close" aria-label="Close modal">&times;</a>
+            </div>
+            <div class="modal-body teacher-info-body">
+               <div class="teacher-info-top">
+                  <div class="teacher-photo-container">
+                     <img src="images/teacher.jpg" alt="Ihor Tkachuk" class="teacher-detail-photo">
+                  </div>
+                  <div class="teacher-details">
+                     <div class="teacher-name-row">
+                        <h2>Ihor Tkachuk</h2>
+                        <span class="star-icon">⭐</span>
+                     </div>
+                     <p class="speciality-text">Chemistry</p>
+                     <p class="location-text">Kyiv, Ukraine</p>
+                     <p class="age-sex-text">35, Male</p>
+                     <p class="email-text"><a href="mailto:ihor_tkachuk@domain.com">ihor_tkachuk@domain.com</a></p>
+                     <p class="phone-text">+381234567</p>
+                  </div>
+               </div>
+               <div class="teacher-description">
+                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. An autem consectetur culpa cumque, distinctio dolor dolore doloremque co explicari facilis nam nesciunt nisi pariatur perspiciatis porro quis simillique temporibus veniam veritatis? A ab ad, aliquam amet mecepturi cupiditate debitis deserunt doloribus earum eius eos minus nostrum odit omnis perferendis...</p>
+               </div>
+               <div class="teacher-map-link">
+                  <a href="#" class="toggle-map-btn">toggle map</a>
+               </div>
+            </div>
+         </div>
+      </div>
   </body>
 </html>
