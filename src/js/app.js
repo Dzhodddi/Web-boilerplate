@@ -1,4 +1,4 @@
 import testModules from './test-module.js';
-/** ******** Your code here! *********** */
+import "../scss/style.scss";
 
 console.log(testModules.hello);
