@@ -159,7 +159,7 @@ export function filterUsers(users = [], filters = {}) {
 
 
 export function sortUsers(users = [], sortBy = "full_name", order = "asc") {
-    const allowedFields = ["full_name", "age", "b_day", "country"];
+    const allowedFields = ["full_name", "age", "b_day", "country", "course"];
     if (!allowedFields.includes(sortBy))
         throw new Error(`Invalid sort field. Choose one of: ${allowedFields.join(", ")}`);
     
