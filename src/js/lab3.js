@@ -1,16 +1,25 @@
-import { randomUserMock, additionalUsers } from "./FE4U-Lab2-mock.js";
 import {
-  formatAndMergeUsers,
+  formatUser,
+  mergeUsers,
   formatExtraUser,
   validateUser,
   sortUsers,
 } from "./lab2.js";
+
+const API_URL = "https://randomuser.me/api/";
 
 let allUsers = [];
 let currentSort = { field: "full_name", order: "asc" };
 let searchQuery = "";
 let currentPage = 1;
 const PAGE_SIZE = 10;
+
+async function fetchUsers(count) {
+  const response = await fetch(`${API_URL}?results=${count}`);
+  if (!response.ok) throw new Error(`Request failed: ${response.status}`);
+  const data = await response.json();
+  return data.results.map(formatUser);
+}
 
 function getInitials(fullName) {
   if (!fullName) return "?";
@@ -223,15 +232,24 @@ function setupEventDelegation() {
   });
 }
 
+function fillRegionOptions() {
+  const regionSelect = document.getElementById("region-select");
+  if (!regionSelect) return;
+
+  const selected = regionSelect.value || "all";
+  const countries = Array.from(
+    new Set(allUsers.map((u) => u.country).filter(Boolean))
+  ).sort();
+
+  regionSelect.innerHTML = `<option value="all">All regions</option>` +
+    countries.map((c) => `<option value="${c}">${c}</option>`).join("");
+  regionSelect.value = selected;
+}
+
 function setupFilters() {
   const regionSelect = document.getElementById("region-select");
   if (regionSelect) {
-    const countries = Array.from(
-      new Set(allUsers.map((u) => u.country).filter(Boolean))
-    ).sort();
-
-    regionSelect.innerHTML = `<option value="all">All regions</option>` +
-      countries.map((c) => `<option value="${c}">${c}</option>`).join("");
+    fillRegionOptions();
     regionSelect.addEventListener("change", applyAndRender);
   }
 
@@ -311,7 +329,17 @@ function renderPagination(total) {
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
   nav.innerHTML = "";
 
-  for (let i = 1; i <= totalPages; i++) {
+  const pages = Array.from(new Set([1, 2, totalPages]))
+    .filter((p) => p <= totalPages)
+    .sort((a, b) => a - b);
+
+  pages.forEach((i, idx) => {
+    if (idx > 0 && i - pages[idx - 1] > 1) {
+      const dots = document.createElement("span");
+      dots.textContent = "...";
+      nav.appendChild(dots);
+    }
+
     const a = document.createElement("a");
     a.textContent = i;
     a.href = "#statistics";
@@ -323,7 +351,24 @@ function renderPagination(total) {
       renderStatisticsTable(sorted);
     });
     nav.appendChild(a);
-  }
+  });
+
+  const next = document.createElement("a");
+  next.textContent = "Next ›";
+  next.href = "#statistics";
+  next.addEventListener("click", async (e) => {
+    e.preventDefault();
+    try {
+      const more = await fetchUsers(10);
+      allUsers = mergeUsers(allUsers, more);
+      currentPage = Math.ceil(getDisplayedUsers().length / PAGE_SIZE);
+      fillRegionOptions();
+      refreshAll();
+    } catch (err) {
+      console.error(err);
+    }
+  });
+  nav.appendChild(next);
 }
 
 function setupTableSorting() {
@@ -527,8 +572,12 @@ function refreshAll() {
   renderFavoritesSection();
 }
 
-export function initApp() {
-  allUsers = formatAndMergeUsers(randomUserMock, additionalUsers);
+export async function initApp() {
+  try {
+    allUsers = mergeUsers(await fetchUsers(50));
+  } catch (err) {
+    console.error(err);
+  }
 
   setupFilters();
   setupTableSorting();
