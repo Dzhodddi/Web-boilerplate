@@ -1,4 +1,4 @@
-import { randomUserMock, additionalUsers } from "./FE4U-Lab2-mock";
+import _ from "lodash";
 
 const capitalizeFirstLetter = (str) => str ? str.charAt(0).toUpperCase() + str.slice(1) : null;
 
@@ -30,22 +30,22 @@ export const formatUser = (user) => {
     if (!user) return null;
   
     return {
-      id: (user.login && user.login.uuid) ? user.login.uuid : null,
+      id: _.get(user, "login.uuid", null),
       gender: capitalizeFirstLetter(user.gender),
-      title: (user.name && user.name.title) ? user.name.title : null,
+      title: _.get(user, "name.title", null),
       full_name: user.name ? `${user.name.first} ${user.name.last}` : null,
-      city: (user.location && user.location.city) ? user.location.city : null,
-      state: (user.location && user.location.state) ? user.location.state : null,
-      country: (user.location && user.location.country) ? user.location.country : null,
-      postcode: (user.location && user.location.postcode != null) ? user.location.postcode : null,
-      coordinates: (user.location && user.location.coordinates) ? user.location.coordinates : null,
-      timezone: (user.location && user.location.timezone) ? user.location.timezone : null,
+      city: _.get(user, "location.city", null),
+      state: _.get(user, "location.state", null),
+      country: _.get(user, "location.country", null),
+      postcode: _.get(user, "location.postcode", null),
+      coordinates: _.get(user, "location.coordinates", null),
+      timezone: _.get(user, "location.timezone", null),
       email: user.email || null,
-      b_day: (user.dob && user.dob.date) ? user.dob.date : null,
-      age: (user.dob && user.dob.age != null) ? user.dob.age : null,
+      b_day: _.get(user, "dob.date", null),
+      age: _.get(user, "dob.age", null),
       phone: user.phone || null,
-      picture_large: (user.picture && user.picture.large) ? user.picture.large : null,
-      picture_thumbnail: (user.picture && user.picture.thumbnail) ? user.picture.thumbnail : null,
+      picture_large: _.get(user, "picture.large", null),
+      picture_thumbnail: _.get(user, "picture.thumbnail", null),
       favorite: false,
       course: getRandomCourse(),
       bg_color: "#aaaaaa",
@@ -107,96 +107,81 @@ export function mergeUsers(...userLists) {
   }
 
 export function formatAndMergeUsers(rawUsers = [], extraUsers = []) {
-    const formattedRaw = rawUsers.map(formatUser);
-    const formattedExtra = extraUsers.map(formatExtraUser);
+    const formattedRaw = _.map(rawUsers, formatUser);
+    const formattedExtra = _.map(extraUsers, formatExtraUser);
     return mergeUsers(formattedRaw, formattedExtra);
 }
 
 export const validateUser = (user) => {
-    if (!user || typeof user !== "object") 
+    if (!_.isObject(user)) 
         return false;
 
     const isCapitalizedString = (val) =>
-        typeof val === "string" && val.trim().length > 0 && /^[A-ZА-ЯІЇЄҐ]/.test(val.trim());
+        _.isString(val) && /^[A-ZА-ЯІЇЄҐ]/.test(_.trim(val));
 
     const stringFields = ["full_name", "gender", "note", "state", "city", "country"];
 
-    for (const field of stringFields) {
-        if (!isCapitalizedString(user[field])) 
-            return false;
-    }
-
-    if (typeof user.age !== "number" || isNaN(user.age) || user.age < 0) {
+    if (!_.every(stringFields, (field) => isCapitalizedString(user[field]))) {
         return false;
     }
 
-    if (typeof user.email !== "string" || !emailRegex.test(user.email)) {
+    if (!_.isFinite(user.age) || user.age < 0) {
         return false;
     }
 
-    if (typeof user.phone !== "string") return false;
+    if (!_.isString(user.email) || !emailRegex.test(user.email)) {
+        return false;
+    }
+
+    if (!_.isString(user.phone)) return false;
 
     const pattern = phonePatterns[user.country];
-    if (pattern && !pattern.test(user.phone.trim())) {
-        return false;
-    }
-
-    return true;
+    return !pattern || pattern.test(_.trim(user.phone));
 }
 
 export function filterUsers(users = [], filters = {}) {
-    return users.filter((user) => {
-        return Object.entries(filters).every(([key, filterValue]) => {
-            if (filterValue === undefined || filterValue === null) return true;
+    return _.filter(users, (user) =>
+        _.every(filters, (filterValue, key) => {
+            if (_.isNil(filterValue)) return true;
 
-            if (typeof filterValue === "string")
-                return String(user[key] || "").toLowerCase() === filterValue.toLowerCase();
+            if (_.isString(filterValue))
+                return _.toLower(user[key]) === _.toLower(filterValue);
 
             return user[key] === filterValue;
-        });
-    });
+        })
+    );
 }
 
 
 export function sortUsers(users = [], sortBy = "full_name", order = "asc") {
     const allowedFields = ["full_name", "age", "b_day", "country", "course"];
-    if (!allowedFields.includes(sortBy))
+    if (!_.includes(allowedFields, sortBy))
         throw new Error(`Invalid sort field. Choose one of: ${allowedFields.join(", ")}`);
     
-  
-    const factor = order.toLowerCase() === "desc" ? -1 : 1;
-  
-    return [...users].sort((a, b) => {
-        const valA = a[sortBy];
-        const valB = b[sortBy];
+    const getValue = (user) => {
+        const val = user[sortBy];
+        if (sortBy === "age") return val;
+        if (sortBy === "b_day") return new Date(val).getTime();
+        return _.deburr(_.toLower(val));
+    };
 
-        if (valA == null) return 1;
-        if (valB == null) return -1;
-
-        if (sortBy === "age") {
-            return (valA - valB) * factor;
-        }
-
-        if (sortBy === "b_day") {
-            return (new Date(valA) - new Date(valB)) * factor;
-        }
-
-        return String(valA).localeCompare(String(valB)) * factor;
-    });
+    return _.orderBy(
+        users,
+        [(user) => _.isNil(user[sortBy]), getValue],
+        ["asc", _.toLower(order) === "desc" ? "desc" : "asc"]
+    );
 }
 
 export function findUser(users = [], query) {
-    if (query === undefined || query === null) return null;
+    if (_.isNil(query)) return null;
   
-    return users.find((user) => {
-        if (typeof query === "number")
+    return _.find(users, (user) => {
+        if (_.isNumber(query))
             return user.age === query;
   
-        const searchStr = String(query).toLowerCase();
-        const matchName = user.full_name && user.full_name.toLowerCase().includes(searchStr);
-        const matchNote = user.note && user.note.toLowerCase().includes(searchStr);
-
-        return Boolean(matchName || matchNote);
+        const searchStr = _.toLower(query);
+        return _.includes(_.toLower(user.full_name), searchStr)
+            || _.includes(_.toLower(user.note), searchStr);
     }) || null;
 }
 

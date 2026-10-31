@@ -5,14 +5,19 @@ import {
   validateUser,
   sortUsers,
 } from "./lab2.js";
+import {
+  daysToNextBirthday,
+  renderPieChart,
+  renderReport,
+  resetTeacherMap,
+  toggleTeacherMap,
+} from "./lab5.js";
 
 const API_URL = "https://randomuser.me/api/";
 
 let allUsers = [];
-let currentSort = { field: "full_name", order: "asc" };
 let searchQuery = "";
-let currentPage = 1;
-const PAGE_SIZE = 10;
+let statisticsView = "chart";
 
 async function fetchUsers(count) {
   const response = await fetch(`${API_URL}?results=${count}`);
@@ -177,8 +182,16 @@ function openTeacherModal(user) {
   const phoneEl = modal.querySelector(".phone-text");
   if (phoneEl) phoneEl.textContent = user.phone || "—";
 
+  const birthdayEl = modal.querySelector(".birthday-text");
+  if (birthdayEl) {
+    const days = daysToNextBirthday(user.b_day);
+    birthdayEl.textContent = `Days until birthday: ${days === null ? "—" : days}`;
+  }
+
   const noteEl = modal.querySelector(".teacher-description p");
   if (noteEl) noteEl.textContent = user.note || "";
+
+  resetTeacherMap(user.coordinates);
 
   window.location.hash = "modal-teacher-info";
 }
@@ -220,6 +233,17 @@ function setupEventDelegation() {
         starEl.title = user.favorite ? "Remove from favorites" : "Add to favorites";
         refreshAll();
       }
+    });
+  }
+
+  const mapBtn = document.querySelector(".toggle-map-btn");
+  if (mapBtn) {
+    mapBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const modal = document.getElementById("modal-teacher-info");
+      const userId = modal ? modal.dataset.currentUserId : null;
+      const user = allUsers.find((u) => String(u.id) === String(userId));
+      if (user) toggleTeacherMap(user);
     });
   }
 
@@ -286,125 +310,52 @@ function setupFilters() {
 }
 
 function applyAndRender() {
-  currentPage = 1;
-  const filtered = getDisplayedUsers();
-  renderTeacherCards(filtered);
-  renderStatisticsTable(sortUsers(filtered, currentSort.field, currentSort.order));
+  renderTeacherCards(getDisplayedUsers());
+  renderStatistics();
 }
 
-function renderStatisticsTable(users) {
-  const tbody = document.querySelector(".statistics-table tbody");
-  if (!tbody) return;
+function renderStatistics() {
+  const chartBox = document.querySelector(".statistics-chart");
+  const reportBox = document.getElementById("statistics-report");
+  if (!chartBox || !reportBox) return;
 
-  const start = (currentPage - 1) * PAGE_SIZE;
-  const pageUsers = users.slice(start, start + PAGE_SIZE);
+  chartBox.hidden = statisticsView !== "chart";
+  reportBox.hidden = statisticsView === "chart";
 
-  if (pageUsers.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">No records</td></tr>`;
-    renderPagination(0);
-    return;
+  if (statisticsView === "chart") {
+    renderPieChart(getDisplayedUsers(), document.getElementById("chart-field").value);
+  } else {
+    renderReport(statisticsView, sortUsers(allUsers));
   }
-
-  tbody.innerHTML = pageUsers
-    .map(
-      (u) => `
-      <tr>
-        <td>${u.full_name || "—"}</td>
-        <td>${u.course || "—"}</td>
-        <td>${u.age != null ? u.age : "—"}</td>
-        <td>${u.gender || "—"}</td>
-        <td>${u.country || "—"}</td>
-      </tr>
-    `
-    )
-    .join("");
-
-  renderPagination(users.length);
 }
 
-function renderPagination(total) {
-  const nav = document.querySelector(".statistics .pagination");
-  if (!nav) return;
+function setupStatistics() {
+  const tabs = document.querySelectorAll(".statistics-tab");
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      statisticsView = tab.dataset.view;
+      tabs.forEach((t) => t.classList.toggle("active", t === tab));
+      renderStatistics();
+    });
+  });
 
-  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
-  nav.innerHTML = "";
+  const chartField = document.getElementById("chart-field");
+  if (chartField) chartField.addEventListener("change", renderStatistics);
 
-  const pages = Array.from(new Set([1, 2, totalPages]))
-    .filter((p) => p <= totalPages)
-    .sort((a, b) => a - b);
-
-  pages.forEach((i, idx) => {
-    if (idx > 0 && i - pages[idx - 1] > 1) {
-      const dots = document.createElement("span");
-      dots.textContent = "...";
-      nav.appendChild(dots);
-    }
-
-    const a = document.createElement("a");
-    a.textContent = i;
-    a.href = "#statistics";
-    if (i === currentPage) a.classList.add("active");
-    a.addEventListener("click", (e) => {
+  const loadMore = document.querySelector(".statistics .load-more");
+  if (loadMore) {
+    loadMore.addEventListener("click", async (e) => {
       e.preventDefault();
-      currentPage = i;
-      const sorted = sortUsers(getDisplayedUsers(), currentSort.field, currentSort.order);
-      renderStatisticsTable(sorted);
-    });
-    nav.appendChild(a);
-  });
-
-  const next = document.createElement("a");
-  next.textContent = "Next ›";
-  next.href = "#statistics";
-  next.addEventListener("click", async (e) => {
-    e.preventDefault();
-    try {
-      const more = await fetchUsers(10);
-      allUsers = mergeUsers(allUsers, more);
-      currentPage = Math.ceil(getDisplayedUsers().length / PAGE_SIZE);
-      fillRegionOptions();
-      refreshAll();
-    } catch (err) {
-      console.error(err);
-    }
-  });
-  nav.appendChild(next);
-}
-
-function setupTableSorting() {
-  const headers = document.querySelectorAll(".statistics-table thead th");
-  const sortKeys = ["full_name", "course", "age", null, "country"];
-
-  headers.forEach((th, i) => {
-    const key = sortKeys[i];
-    if (!key) return;
-
-    th.dataset.sort = key;
-    th.style.cursor = "pointer";
-    th.addEventListener("click", () => {
-      if (currentSort.field === key) {
-        currentSort.order = currentSort.order === "asc" ? "desc" : "asc";
-      } else {
-        currentSort.field = key;
-        currentSort.order = "asc";
+      try {
+        const more = await fetchUsers(10);
+        allUsers = mergeUsers(allUsers, more);
+        fillRegionOptions();
+        refreshAll();
+      } catch (err) {
+        console.error(err);
       }
-
-      headers.forEach((h) => {
-        const arrow = h.querySelector(".sort-arrow");
-        if (!arrow) return;
-        if (h.dataset.sort === currentSort.field) {
-          arrow.innerHTML = currentSort.order === "asc" ? "&uarr;" : "&darr;";
-          h.classList.add("sort-active");
-        } else {
-          arrow.innerHTML = "&darr;";
-          h.classList.remove("sort-active");
-        }
-      });
-
-      const sorted = sortUsers(getDisplayedUsers(), currentSort.field, currentSort.order);
-      renderStatisticsTable(sorted);
     });
-  });
+  }
 }
 
 function setupSearch() {
@@ -566,9 +517,8 @@ function renderFavoritesSection() {
 }
 
 function refreshAll() {
-  const filtered = getDisplayedUsers();
-  renderTeacherCards(filtered);
-  renderStatisticsTable(sortUsers(filtered, currentSort.field, currentSort.order));
+  renderTeacherCards(getDisplayedUsers());
+  renderStatistics();
   renderFavoritesSection();
 }
 
@@ -580,7 +530,7 @@ export async function initApp() {
   }
 
   setupFilters();
-  setupTableSorting();
+  setupStatistics();
   setupSearch();
   setupAddTeacherForm();
   setupEventDelegation();

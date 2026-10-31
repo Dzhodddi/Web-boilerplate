@@ -177,97 +177,32 @@
         <section id="statistics" class="statistics">
             <h2>Statistics</h2>
 
-            <table class="statistics-table">
-                <thead>
-                    <tr>
-                        <th scope="col" class="sortable">Name <span class="sort-arrow">&darr;</span></th>
-                        <th scope="col" class="sortable">Speciality <span class="sort-arrow">&darr;</span></th>
-                        <th scope="col" class="sortable">Age <span class="sort-arrow">&darr;</span></th>
-                        <th scope="col" class="sortable">Gender <span class="sort-arrow">&darr;</span></th>
-                        <th scope="col" class="sortable">Nationality <span class="sort-arrow">&darr;</span></th>
-                    </tr>
-                </thead>
+            <div class="statistics-tabs">
+                <button type="button" class="statistics-tab active" data-view="chart">Pie chart</button>
+                <button type="button" class="statistics-tab" data-view="countries">Report by countries</button>
+                <button type="button" class="statistics-tab" data-view="flat">All teachers</button>
+            </div>
 
-                <tbody>
-                    <tr>
-                        <td>Daisy Alexander</td>
-                        <td>Chemistry</td>
-                        <td>28</td>
-                        <td>Female</td>
-                        <td>Vietnam</td>
-                    </tr>
-                    <tr>
-                        <td>Julia Bradley</td>
-                        <td>Math</td>
-                        <td>26</td>
-                        <td>Female</td>
-                        <td>USA</td>
-                    </tr>
-                    <tr>
-                        <td>Rita Hart</td>
-                        <td>Art</td>
-                        <td>41</td>
-                        <td>Female</td>
-                        <td>Ireland</td>
-                    </tr>
-                    <tr>
-                        <td>Jonathan Jacobs</td>
-                        <td>Math</td>
-                        <td>32</td>
-                        <td>Male</td>
-                        <td>England</td>
-                    </tr>
-                    <tr>
-                        <td>Nathaniel White</td>
-                        <td>Computer Science</td>
-                        <td>37</td>
-                        <td>Male</td>
-                        <td>Austria</td>
-                    </tr>
-                    <tr>
-                        <td>Frank Medina</td>
-                        <td>English</td>
-                        <td>43</td>
-                        <td>Male</td>
-                        <td>Italy</td>
-                    </tr>
-                    <tr>
-                        <td>Ella Curtis</td>
-                        <td>Chess</td>
-                        <td>34</td>
-                        <td>Female</td>
-                        <td>USA</td>
-                    </tr>
-                    <tr>
-                        <td>Claire Simmons</td>
-                        <td>Art</td>
-                        <td>38</td>
-                        <td>Female</td>
-                        <td>Netherlands</td>
-                    </tr>
-                    <tr>
-                        <td>Benjamin Knight</td>
-                        <td>Biology</td>
-                        <td>44</td>
-                        <td>Male</td>
-                        <td>Scotland</td>
-                    </tr>
-                    <tr>
-                        <td>Norma Rose</td>
-                        <td>Statistics</td>
-                        <td>36</td>
-                        <td>Female</td>
-                        <td>France</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="statistics-chart">
+                <div class="chart-field-filter">
+                    <label for="chart-field">Group by</label>
+                    <select id="chart-field">
+                        <option value="course">Speciality</option>
+                        <option value="age">Age</option>
+                        <option value="gender">Gender</option>
+                        <option value="country">Nationality</option>
+                    </select>
+                </div>
+                <div class="chart-container">
+                    <canvas id="statistics-pie"></canvas>
+                </div>
+                <p class="no-results chart-empty" hidden>No records</p>
+            </div>
 
-            <nav class="pagination" aria-label="Statistics pages">
-                <a>1</a>
-                <a>2</a>
-                <a>3</a>
-                <span aria-hidden="true">...</span>
-                <a>Last</a>
+            <div id="statistics-report" hidden></div>
+
+            <nav class="pagination" aria-label="Load more teachers">
+                <a href="#statistics" class="load-more">Load 10 more ›</a>
             </nav>
         </section>
         
@@ -497,6 +432,7 @@
                      <p class="age-sex-text">35, Male</p>
                      <p class="email-text"><a href="mailto:ihor_tkachuk@domain.com">ihor_tkachuk@domain.com</a></p>
                      <p class="phone-text">+381234567</p>
+                     <p class="birthday-text">Days until birthday: —</p>
                   </div>
                </div>
                <div class="teacher-description">
@@ -505,6 +441,7 @@
                <div class="teacher-map-link">
                   <a href="#" class="toggle-map-btn">toggle map</a>
                </div>
+               <div id="teacher-map" hidden></div>
             </div>
          </div>
       </div>
