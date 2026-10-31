@@ -97,13 +97,19 @@ const CONFIG = {
         ],
       },
       {
-        test: /\.(png|jpg|gif)$/,
+        test: /\.(png|jpg|gif|svg|ttf|woff)$/,
         use: [
           {
             loader: "file-loader",
             options: {},
           },
         ],
+      },
+      {
+        test: /\.js$/,
+        include: /node_modules[\\/]chart\.js/,
+        loader: "babel-loader",
+        options: { presets: ["@babel/preset-env"] },
       },
     ],
   },

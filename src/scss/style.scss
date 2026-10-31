@@ -341,65 +341,43 @@ button {
     }
 }
 
-.statistics-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-    text-align: left;
+.statistics-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.statistics-tab {
+    padding: 8px 16px;
     font-size: 14px;
+    color: $link-teal;
+    background: none;
+    border: 1px solid $link-teal;
+    border-radius: 2px;
+    cursor: pointer;
 
-    thead tr {
-        border-bottom: 2px solid $text-dark;
+    &.active {
+        color: #ffffff;
+        background-color: $link-teal;
     }
+}
 
-    th {
-        padding: 12px 15px;
-        font-weight: 600;
-        color: $text-dark;
-        transition: background-color 0.2s ease;
+.chart-field-filter {
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 14px;
+    color: $text-muted;
 
-        &.sortable {
-            cursor: pointer;
-            user-select: none;
-
-            .sort-arrow {
-                display: inline-block;
-                margin-left: 4px;
-                font-size: 11px;
-                color: $text-dark;
-                opacity: 0;
-                visibility: hidden;
-                transition: opacity 0.2s ease, visibility 0.2s ease;
-            }
-
-            &:hover {
-                background-color: #f2f2f2;
-
-                .sort-arrow {
-                    opacity: 1;
-                    visibility: visible;
-                }
-            }
-        }
+    label {
+        margin-right: 8px;
     }
+}
 
-    tbody tr {
-        border-bottom: 1px solid #f0f0f0;
-        transition: background-color 0.15s;
-
-        &:nth-child(even) {
-            background-color: #fcf5f7;
-        }
-
-        &:hover {
-            background-color: #f5eaee;
-        }
-    }
-
-    td {
-        padding: 12px 15px;
-        color: #555555;
-    }
+.chart-container {
+    position: relative;
+    height: 380px;
 }
 
 .pagination {
@@ -897,6 +875,11 @@ footer {
         margin-bottom: 15px;
     }
 
+    #teacher-map {
+        height: 260px;
+        margin-top: 12px;
+    }
+
     .teacher-map-link {
         .toggle-map-btn {
             color: $link-teal;
@@ -971,17 +954,6 @@ footer {
     .teachers-grid {
         grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
         gap: 25px 15px;
-    }
-
-    .statistics-table {
-        display: block;
-        overflow-x: auto;
-        white-space: nowrap;
-
-        th, td {
-            padding: 10px 10px;
-            font-size: 13px;
-        }
     }
 
     .favorites-carousel {
